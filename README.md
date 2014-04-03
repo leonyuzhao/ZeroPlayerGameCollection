@@ -1,0 +1,2 @@
+ZeroPlayerGameCollection
+========================
