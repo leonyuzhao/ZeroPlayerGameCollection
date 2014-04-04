@@ -2,24 +2,25 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Laugton's Ant</title>
+    <title>Conway's Game of Life</title>
     <link href="css/style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
     <div id="boardDiv">
     </div>
-    Total steps:&nbsp;<div id="stepCount"></div>
+    Total generations:&nbsp;<div id="generationCount"></div>
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-    <script src="js/LaugtonAntEngine.js"></script>
+    <script src="js/GameOfLifeEngine.js"></script>
 </body>
 </html>
 
 <script type="text/javascript">
 
-    function BuildBoard(size) {
+    function BuildBoard(nodes) {
         var pos = 0;
         var board = "";
+        var size = Math.sqrt(nodes.length);
         board += "<table>";
         for (var i = 0; i < size; i++) {
             board += "<tr>";
@@ -33,34 +34,33 @@
         $("#boardDiv").append(board);
     }
 
+    function UpdateBoard(nodes) {
+        for (var i = 0; i < nodes.length; i++) {
+            if (nodes[i].value == 1) {
+                $("#cell_" + i).addClass("Solid");
+            }
+            else {
+                $("#cell_" + i).removeClass("Solid");
+            }
+        }
+    }
+
     $(document).ready(function () {
-        var size = 128;
+        var size = 256;
         var speed = 0.1;
 
-        BuildBoard(size);
-
-        var e1 = new LangtonAntEngine(size, 'cell_', 'Solid');
-        var e2 = new LangtonAntEngine(size, 'cell_', 'Solid');
-        var e3 = new LangtonAntEngine(size, 'cell_', 'Solid');
-        var e4 = new LangtonAntEngine(size, 'cell_', 'Solid');
-
-        var totalSteps = 0;
-
-        e1.NextStep();
-        e2.NextStep();
-        e3.NextStep();
-        e4.NextStep();
-        totalSteps++;
-        $("#stepCount").text(totalSteps);
+        var engine = new GameOfLifeEngine(size);
+        BuildBoard(engine.nodes);
+        var totalGenerations = 0;
+        totalGenerations++;
+        $("#generationCount").text(totalGenerations);
         var sec = speed * 1000;
         setInterval(function () {
-            e1.NextStep();
-            e2.NextStep();
-            e3.NextStep();
-            e4.NextStep();
-            totalSteps++;
-            $("#stepCount").text(totalSteps);
+            engine.NextGeneration();
+            UpdateBoard(engine.nodes);
+            totalGenerations++;
+            $("#generationCount").text(totalGenerations);
         }, sec);
     });
-
+    
 </script>
